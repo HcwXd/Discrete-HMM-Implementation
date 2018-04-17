@@ -62,6 +62,7 @@ double _epsilon[MAX_SAMPLES][MAX_SEQ][MAX_STATE][MAX_STATE];
 
 double _accumulated_gamma[MAX_STATE];
 double _accumulated_epsilon[MAX_STATE][MAX_STATE];
+double _accumulated_observ_gamma[MAX_STATE][MAX_OBSERV];
 
 double _updated_initial[MAX_STATE];
 double _updated_transition[MAX_SAMPLES][MAX_STATE][MAX_STATE];
@@ -170,10 +171,12 @@ void calculate_gamma(HMM *HMM_model, char *sample, int number_of_sample)
         _updated_initial[state] += _gamma[number_of_sample][0][state];
         for (int observT = 0; observT < sample_length - 1; observT++)
         {
+            int observ = sample[observT] - 'A';
             _accumulated_gamma[state] += _gamma[number_of_sample][observT][state];
+            _accumulated_observ_gamma[state][observ] += _gamma[number_of_sample][observT][state];
         }
     }
-
+    /*
     printf("GammaDemo\n");
 
     for (int j = 0; j < number_of_state; j++)
@@ -184,6 +187,7 @@ void calculate_gamma(HMM *HMM_model, char *sample, int number_of_sample)
         }
         printf("\n");
     }
+*/
 };
 
 void calculate_epsilon(HMM *HMM_model, char *sample, int number_of_sample)
@@ -212,7 +216,8 @@ void calculate_epsilon(HMM *HMM_model, char *sample, int number_of_sample)
                 _epsilon[number_of_sample][observT][state][nextState] = _alpha[number_of_sample][observT][state] *
                                                                         _beta[number_of_sample][observT + 1][nextState] *
                                                                         HMM_model->transition[state][nextState] *
-                                                                        HMM_model->observation[observ][nextState];
+                                                                        HMM_model->observation[observ][nextState] /
+                                                                        tmp_denominator;
             }
         }
         // printf("\n");
@@ -227,17 +232,6 @@ void calculate_epsilon(HMM *HMM_model, char *sample, int number_of_sample)
                 _accumulated_epsilon[state][nextState] += _epsilon[number_of_sample][observT][state][nextState];
             }
         }
-    }
-
-    printf("GammaDemo\n");
-
-    for (int j = 0; j < number_of_state; j++)
-    {
-        for (int i = 0; i < 49; i++)
-        {
-            printf("%f ", _gamma[number_of_sample][i][j]);
-        }
-        printf("\n");
     }
 };
 
@@ -273,7 +267,7 @@ void update_lambda(HMM *HMM_model, int number_of_sample)
         double tmp;
         for (int observ = 0; observ < number_of_observation; observ++)
         {
-            HMM_model->observation[observ][state] = 0;
+            HMM_model->observation[observ][state] = _accumulated_observ_gamma[state][observ] / _accumulated_gamma[state];
         }
     }
 }
@@ -283,14 +277,18 @@ void initiate_accumulation(HMM *HMM_model)
     int number_of_state = HMM_model->state_num;
     int number_of_observation = HMM_model->observ_num;
 
-    for (int i = 0; i < number_of_state; ++i)
+    for (int i = 0; i < number_of_state; i++)
     {
         _accumulated_gamma[i] = 0;
         _updated_initial[i] = 0;
 
-        for (int j = 0; j < number_of_state; ++j)
+        for (int j = 0; j < number_of_state; j++)
         {
             _accumulated_epsilon[i][j] = 0;
+        }
+        for (int j = 0; j < number_of_observation; j++)
+        {
+            _accumulated_observ_gamma[i][j] = 0;
         }
     }
 }
@@ -306,17 +304,11 @@ void trainHMM(int iteration_time, HMM *HMM_model, FILE *training_data)
     for (int i = 0; i < iteration_time; i++)
     {
         fseek(training_data, 0, SEEK_SET);
-        int apple = 0;
         initiate_accumulation(HMM_model);
         for (number_of_sample = 0; fscanf(training_data, "%s", sample) > 0; number_of_sample++)
         {
             train_through_one_sample(HMM_model, sample, number_of_sample);
-            printf("end\n");
-            apple++;
-            if (apple > 10)
-            {
-                break;
-            }
+            // printf("end\n");
         }
         update_lambda(HMM_model, number_of_sample);
     }
@@ -330,9 +322,13 @@ int main(int argc, char *argv[])
     printf("%d\n", iteration_time);
     HMM HMM_model;
     loadHMM(&HMM_model, argv[2]);
+    dumpHMM(stderr, &HMM_model);
 
     FILE *training_data = open_or_die(argv[3], "r");
     FILE *trained_model = open_or_die(argv[4], "w");
 
     trainHMM(iteration_time, &HMM_model, training_data);
+    dumpHMM(trained_model, &HMM_model);
+    fclose(trained_model);
+    fclose(training_data);
 }
