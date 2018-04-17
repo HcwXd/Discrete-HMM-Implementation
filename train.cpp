@@ -48,5 +48,11 @@ Step3{
 }
 */
 
-int main(int argc, char *argv[]){
+using namespace std;
+
+int main(int argc, char *argv[])
+{
+    int iteration_time = strtol(argv[1], NULL, 10);
+    HMM HMM_model;
+    loadHMM(&HMM_model, argv[2]);
 }
