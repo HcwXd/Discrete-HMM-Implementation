@@ -88,11 +88,51 @@ void calculate_alpha(HMM *HMM_model, char *sample, int number_of_sample)
         }
         // printf("\n");
     }
+
+    printf("AlphaDemo\n");
     for (int j = 0; j < number_of_state; j++)
     {
         for (int i = 0; i < 10; i++)
         {
             printf("%f ", _alpha[number_of_sample][i][j]);
+        }
+        printf("\n");
+    }
+};
+
+void calculate_beta(HMM *HMM_model, char *sample, int number_of_sample)
+{
+    int sample_length = strlen(sample);
+    int number_of_state = HMM_model->state_num;
+
+    // printf("%s\n", sample);
+    for (int state = 0; state < number_of_state; state++)
+    {
+        _beta[number_of_sample][sample_length - 1][state] = 1;
+    }
+
+    for (int observT = sample_length - 2; observT >= 0; observT--)
+    {
+        int observ = sample[observT] - 'A';
+        for (int state = 0; state < number_of_state; state++)
+        {
+            for (int nextState = 0; nextState < number_of_state; nextState++)
+            {
+                _beta[number_of_sample][observT][state] += HMM_model->transition[state][nextState] *
+                                                           HMM_model->observation[observ][nextState] *
+                                                           _beta[number_of_sample][observT + 1][nextState];
+            }
+        }
+        // printf("\n");
+    }
+
+    printf("BetaDemo\n");
+
+    for (int j = 0; j < number_of_state; j++)
+    {
+        for (int i = 49; i > 39; i--)
+        {
+            printf("%f ", _beta[number_of_sample][i][j]);
         }
         printf("\n");
     }
