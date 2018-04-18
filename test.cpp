@@ -29,19 +29,24 @@ Hmm struct{
 
 double _delta[2][MAX_STATE];
 
-void viterbi_processing(HMM *HMM_models, int number_of_models, char *data, int best_model_index, double max_path_prob)
+void viterbi_processing(HMM *HMM_models, int number_of_models, char *data, int *best_model_index, double *max_path_prob)
 {
+    int inner_best_model_index = -1;
+    double inner_max_path_prob = 0.0;
+
     for (int model_index = 0; model_index < number_of_models; model_index++)
     {
         HMM *model = HMM_models + model_index;
-        printf("%f\n", model->initial[0]);
         int number_of_state = model->state_num;
 
         int observ = data[0] - 'A';
         for (int state = 0; state < number_of_state; state++)
         {
             _delta[0][state] = model->initial[state] * model->observation[observ][state];
+            // printf("%f ", _delta[0][state]);
         }
+        // printf("\n");
+
         double tmp_high_prob = 0.0;
         for (int observT = 1; observT < strlen(data); observT++)
         {
@@ -63,7 +68,20 @@ void viterbi_processing(HMM *HMM_models, int number_of_models, char *data, int b
                 _delta[0][state] = _delta[1][state];
             }
         }
+        for (int state = 0; state < number_of_state; state++)
+        {
+            if (_delta[1][state] > inner_max_path_prob)
+            {
+                inner_max_path_prob = _delta[1][state];
+                inner_best_model_index = model_index;
+            }
+        }
     }
+    *best_model_index = inner_best_model_index;
+    // printf("%d ", inner_best_model_index + 1);
+
+    *max_path_prob = inner_max_path_prob;
+    // printf("%f\n", inner_max_path_prob);
 }
 
 int main(int argc, char *argv[])
@@ -76,11 +94,20 @@ int main(int argc, char *argv[])
     FILE *output_result = open_or_die(argv[3], "w");
 
     char data[MAX_LINE];
+    int ten = 0;
 
     while (fscanf(input_data, "%s", data))
     {
-        int best_model_index = -1;
-        double max_path_prob = 0.0;
-        viterbi_processing(HMM_models, number_of_models, data, best_model_index, max_path_prob);
+        int best_model_index;
+        double max_path_prob;
+        viterbi_processing(HMM_models, number_of_models, data, &best_model_index, &max_path_prob);
+        printf("%s %f\n", HMM_models[best_model_index].model_name, max_path_prob);
+
+        // fprintf(output_result, "%s %e\n", HMM_models[best_model_index].model_name, max_path_prob);
+        ten++;
+        if (ten > 10)
+        {
+            break;
+        }
     }
 }
