@@ -1,7 +1,6 @@
 #i!/usr/bin/env bash
-# for iter in 50 60 70 80 90 100 110 120 130 140 150 160 170 180 190 200
-# do
-iter=10
+for iter in 1 2 3 4 5 6 7 8 9 10 20 40 80 100 200 300 400 500 600 700 800 900 1000 1100 1200 1300 1400 1500 1600 1700 1800 1900 2000
+do
 echo $iter
 
 ./train $iter model_init.txt seq_model_01.txt model_01.txt
@@ -13,4 +12,4 @@ echo $iter
 ./test modellist.txt testing_data1.txt result.txt
 ./acc result.txt testing_answer.txt
 
-# done
+done

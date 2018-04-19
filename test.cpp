@@ -47,12 +47,13 @@ void viterbi_processing(HMM *HMM_models, int number_of_models, char *data, int *
         }
         // printf("\n");
 
-        double tmp_high_prob = 0.0;
         for (int observT = 1; observT < strlen(data); observT++)
         {
             int observ = data[observT] - 'A';
             for (int state = 0; state < number_of_state; state++)
             {
+                double tmp_high_prob = 0.0;
+
                 for (int preState = 0; preState < number_of_state; preState++)
                 {
                     double tmp = _delta[0][preState] * model->transition[preState][state];
