@@ -109,7 +109,7 @@ static int load_models( const char *listname, HMM *hmm, const int max_num )
 
    int count = 0;
    char filename[MAX_LINE] = "";
-   while( fscanf(fp, "%s", filename) == 1 ){
+   while( fscan５f(fp, "%s", filename) == 1 ){
       loadHMM( &hmm[count], filename );
       count ++;
 

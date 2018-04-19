@@ -319,10 +319,10 @@ int main(int argc, char *argv[])
     // int iteration_time = strtol(argv[1], NULL, 10);
     int iteration_time = atoi(argv[1]);
 
-    printf("%d\n", iteration_time);
+    // printf("%d\n", iteration_time);
     HMM HMM_model;
     loadHMM(&HMM_model, argv[2]);
-    dumpHMM(stderr, &HMM_model);
+    // dumpHMM(stderr, &HMM_model);
 
     FILE *training_data = open_or_die(argv[3], "r");
     FILE *trained_model = open_or_die(argv[4], "w");

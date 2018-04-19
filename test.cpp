@@ -94,20 +94,23 @@ int main(int argc, char *argv[])
     FILE *output_result = open_or_die(argv[3], "w");
 
     char data[MAX_LINE];
-    int ten = 0;
+    int limit = 0;
 
     while (fscanf(input_data, "%s", data))
     {
         int best_model_index;
         double max_path_prob;
         viterbi_processing(HMM_models, number_of_models, data, &best_model_index, &max_path_prob);
-        printf("%s %f\n", HMM_models[best_model_index].model_name, max_path_prob);
-
-        // fprintf(output_result, "%s %e\n", HMM_models[best_model_index].model_name, max_path_prob);
-        ten++;
-        if (ten > 10)
+        // printf("%s %f\n", HMM_models[best_model_index].model_name, max_path_prob);
+        limit++;
+        if (limit > 2500)
         {
             break;
         }
+
+        // fprintf(output_result, "%s %e\n", HMM_models[best_model_index].model_name, max_path_prob);
+        fprintf(output_result, "%s\n", HMM_models[best_model_index].model_name);
     }
+    fclose(input_data);
+    fclose(output_result);
 }
