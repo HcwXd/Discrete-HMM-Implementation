@@ -93,6 +93,7 @@ int main(int argc, char *argv[])
 
     FILE *input_data = open_or_die(argv[2], "r");
     FILE *output_result = open_or_die(argv[3], "w");
+    FILE *handin = open_or_die(argv[4], "w");
 
     char data[MAX_LINE];
     int limit = 0;
@@ -109,7 +110,7 @@ int main(int argc, char *argv[])
             break;
         }
 
-        // fprintf(output_result, "%s %e\n", HMM_models[best_model_index].model_name, max_path_prob);
+        fprintf(handin, "%s %e\n", HMM_models[best_model_index].model_name, max_path_prob);
         fprintf(output_result, "%s\n", HMM_models[best_model_index].model_name);
     }
     fclose(input_data);

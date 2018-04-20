@@ -73,13 +73,12 @@ void calculate_alpha(HMM *HMM_model, char *sample, int number_of_sample)
     int sample_length = strlen(sample);
     int number_of_state = HMM_model->state_num;
 
-    // printf("%s\n", sample);
+    int observ = sample[0] - 'A';
     for (int state = 0; state < number_of_state; state++)
     {
-        int observ = sample[0] - 'A';
         _alpha[number_of_sample][0][state] = HMM_model->initial[state] * HMM_model->observation[observ][state];
-        // printf("%f\n", _alpha[number_of_sample][0][state]);
     }
+
     for (int observT = 1; observT < sample_length; observT++)
     {
         int observ = sample[observT] - 'A';
@@ -90,11 +89,8 @@ void calculate_alpha(HMM *HMM_model, char *sample, int number_of_sample)
             {
                 tmp_sum += _alpha[number_of_sample][observT - 1][preState] * HMM_model->transition[preState][state];
             }
-            // printf("%f", tmp_sum);
             _alpha[number_of_sample][observT][state] = tmp_sum * HMM_model->observation[observ][state];
-            // printf("%f ", _alpha[number_of_sample][observT][state]);
         }
-        // printf("\n");
     }
     /*
     printf("AlphaDemo\n");
@@ -114,7 +110,6 @@ void calculate_beta(HMM *HMM_model, char *sample, int number_of_sample)
     int sample_length = strlen(sample);
     int number_of_state = HMM_model->state_num;
 
-    // printf("%s\n", sample);
     for (int state = 0; state < number_of_state; state++)
     {
         _beta[number_of_sample][sample_length - 1][state] = 1;
@@ -122,7 +117,7 @@ void calculate_beta(HMM *HMM_model, char *sample, int number_of_sample)
 
     for (int observT = sample_length - 2; observT >= 0; observT--)
     {
-        int observ = sample[observT] - 'A';
+        int observ = sample[observT + 1] - 'A';
         for (int state = 0; state < number_of_state; state++)
         {
             for (int nextState = 0; nextState < number_of_state; nextState++)
@@ -132,7 +127,6 @@ void calculate_beta(HMM *HMM_model, char *sample, int number_of_sample)
                                                            _beta[number_of_sample][observT + 1][nextState];
             }
         }
-        // printf("\n");
     }
     /*
     printf("BetaDemo\n");
