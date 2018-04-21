@@ -158,7 +158,6 @@ void calculate_gamma(HMM *HMM_model, char *sample, int number_of_sample)
         {
             _gamma[number_of_sample][observT][state] = _alpha[number_of_sample][observT][state] * _beta[number_of_sample][observT][state] / tmp_denominator;
         }
-        // printf("\n");
     }
     for (int state = 0; state < number_of_state; state++)
     {
@@ -214,7 +213,6 @@ void calculate_epsilon(HMM *HMM_model, char *sample, int number_of_sample)
                                                                         tmp_denominator;
             }
         }
-        // printf("\n");
     }
 
     for (int state = 0; state < number_of_state; state++)
