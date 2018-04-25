@@ -49,5 +49,5 @@ Now, you have `train`, `test` , `acc` three files. These are all you need to exe
 - `RESULT` the file name of the output prediction by testing the data
 - `ANSWER`the file name of the answer to the prediction by testing the data
 - e.g.
-  - ./acc result.txt testing_answer.txt
+  - `./acc result.txt testing_answer.txt`
 
