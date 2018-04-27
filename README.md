@@ -13,7 +13,7 @@ Then we have two executable file `train` and `test`. For counting the accuracy o
 g++ accuracy.cpp -o acc
 ````
 
-Now, you have `train`, `test` , `acc` three files. These are all you need to execute the two shell script files `autotrain.sh` and `itertrain.sh`. Also, you can simply run `train` and `test` to see the result respectively.
+Now, you have `train`, `test` , `acc` three files. These are all you need to execute the two shell script files `HMM_processing.sh` and `Multiple_HMM_processing.sh`. Also, you can simply run `train` and `test` to see the result respectively.
 
 ## Train
 
@@ -51,6 +51,22 @@ Now, you have `train`, `test` , `acc` three files. These are all you need to exe
 - e.g.
   - `./acc result.txt testing_answer.txt`
 
+
+## Running whole process of HMM
+
+To run the whole process of HMM you can execute the two shell script files `HMM_processing.sh` and `Multiple_HMM_processing.sh`. The former one can run the whole process with certain number of iterations, the latter one can run several numbers of iterations at the same time to let you see the correlation between iterations and accuracy.
+
+```
+./HMM_processing.sh ITERATIONS 
+```
+
+- `ITERATIONS` the integer indicates how many iterations the training will run
+
+```
+./Multiple_HMM_processing.sh ITERATIONS1 ITERATIONS2 ITERATIONS3 ...
+```
+
+- `ITERATIONS#` the series of integers the training process will run
 
 ## Result
 
