@@ -51,3 +51,11 @@ Now, you have `train`, `test` , `acc` three files. These are all you need to exe
 - e.g.
   - `./acc result.txt testing_answer.txt`
 
+
+## Result
+
+From training and testing the data with different parameters, we can observe how the accuracy will change with different times of iteration.
+
+The accuracy actually has a strike drop from 0.766 to 0.5364 with iteration equals to 1 and 10 respectively. Then the accuracy bounce back to 0.7852 when iteration equals to 20. After that, the accuracy grows quite steadily, and after iteration above 700, the accuracy become stable at 0.8692 with itearations equals to 1,500 and 2,000. 
+
+In brief, the data indicates that the maximum improvement we can make by adjusting iteration may happened around iteration equals to around 700 ~ 800. And with the increase in iteration above 800, the improvement in the accuracy become subtle.
